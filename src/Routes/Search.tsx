@@ -1,10 +1,9 @@
-import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
 import { useHistory, useLocation, useRouteMatch } from "react-router-dom";
 import { getSearch, IGetMoviesResult } from "../api";
 import styled from "styled-components";
 import { AnimatePresence, motion, Variants } from "motion/react";
 import { makeImagePath } from "../utils";
-import { useEffect } from "react";
 
 const Wrapper = styled.div`
   overflow-x: hidden;

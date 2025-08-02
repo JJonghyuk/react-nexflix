@@ -5,7 +5,7 @@ import { useQuery } from "@tanstack/react-query";
 import { useState } from "react";
 import useWindowWidth from "../useWindowWidth";
 import { makeImagePath } from "../utils";
-import { useHistory, useLocation, useRouteMatch } from "react-router-dom";
+import { useHistory, useRouteMatch } from "react-router-dom";
 import MovieInfo from "./MovieInfo";
 
 const Slider = styled(motion.div)`

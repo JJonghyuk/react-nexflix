@@ -1,8 +1,8 @@
 import { useQuery } from "@tanstack/react-query";
-import { AnimatePresence, motion, useScroll } from "motion/react";
+import { AnimatePresence, motion } from "motion/react";
 import styled from "styled-components";
 import { getMovies, IGetMoviesResult } from "../api";
-import { useHistory, useLocation, useRouteMatch } from "react-router-dom";
+import { useHistory, useRouteMatch } from "react-router-dom";
 import { makeImagePath } from "../utils";
 
 const Overlay = styled(motion.div)`
@@ -140,8 +140,6 @@ interface MovieProps {
 
 function MovieInfo({ id, type, category }: MovieProps) {
   const history = useHistory();
-  const location = useLocation();
-  const params = new URLSearchParams(location.search);
   const { data } = useQuery<IGetMoviesResult>({
     queryKey: [id, category],
     queryFn: () => getMovies({ type, category }),
