@@ -1,0 +1,10 @@
+{
+  "files": {
+    "main.js": "/react-nexflix/static/js/main.a79bfa4e.js",
+    "index.html": "/react-nexflix/index.html",
+    "main.a79bfa4e.js.map": "/react-nexflix/static/js/main.a79bfa4e.js.map"
+  },
+  "entrypoints": [
+    "static/js/main.a79bfa4e.js"
+  ]
+}
