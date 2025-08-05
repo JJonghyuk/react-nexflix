@@ -289,7 +289,6 @@ function Search() {
   const history = useHistory();
   const location = useLocation();
   const keyword = new URLSearchParams(location.search).get("keyword");
-  console.log(keyword);
   // 검색 쿼리
   const { data: searchData, isLoading: isSearchLoading } =
     useQuery<IGetMoviesResult>({

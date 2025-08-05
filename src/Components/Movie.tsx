@@ -132,7 +132,6 @@ function Movie({ id, type, category, title }: MovieProps) {
     queryKey: [id, category],
     queryFn: () => getMovies({ type, category }),
   });
-  console.log(data?.results);
   // // 슬라이드 버튼
   const [index, setIndex] = useState(0);
   const [leaving, setLeaving] = useState(false);

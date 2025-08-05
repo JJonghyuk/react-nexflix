@@ -202,7 +202,6 @@ function MovieInfo({ id, type, category }: MovieProps) {
     data?.results.find(
       (movie) => String(movie.id) === bigMovieMatch.params.movieId,
     );
-  console.log(clickedMovie);
   const movieInfoClose = () => {
     history.goBack();
   };
