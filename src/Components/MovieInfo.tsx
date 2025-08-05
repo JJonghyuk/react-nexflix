@@ -4,6 +4,7 @@ import styled from "styled-components";
 import { getMovies, IGetMoviesResult } from "../api";
 import { useHistory, useRouteMatch } from "react-router-dom";
 import { makeImagePath } from "../utils";
+import { FaStar, FaStarHalfAlt, FaRegStar } from "react-icons/fa";
 
 const Overlay = styled(motion.div)`
   opacity: 0;
@@ -112,10 +113,36 @@ const BigOverview = styled.p`
   overflow: hidden;
 `;
 
-const ReleaseDate = styled.span``;
+const BigInfoBox = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+`;
+
+const ReleaseDate = styled.span`
+  display: flex;
+  position: relative;
+  margin-right: 10px;
+  padding-right: 10px;
+  font-size: 16px;
+  line-height: 1;
+  &::after {
+    content: "";
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    right: 0px;
+    margin-top: -2px;
+    width: 1px;
+    height: 15px;
+    background-color: ${(props) => props.theme.white.lighter};
+  }
+`;
 
 const Rating = styled.span`
-  margin-left: 20px;
+  display: flex;
+  gap: 2px;
+  margin-top: -5px;
 `;
 
 const CloseBtn = styled.button`
@@ -136,6 +163,29 @@ interface MovieProps {
   id: string;
   type: string;
   category: string;
+}
+
+function StarRating({ vote }: { vote: number }) {
+  const score = vote / 2;
+  const fullStars = Math.floor(score);
+  const hasHalfStar = score - fullStars >= 0.5;
+  const emptyStars = 5 - fullStars - (hasHalfStar ? 1 : 0);
+
+  return (
+    <Rating>
+      {Array(fullStars)
+        .fill(null)
+        .map((_, i) => (
+          <FaStar key={`full-${i}`} color="#FFD700" />
+        ))}
+      {hasHalfStar && <FaStarHalfAlt color="#FFD700" />}
+      {Array(emptyStars)
+        .fill(null)
+        .map((_, i) => (
+          <FaRegStar key={`empty-${i}`} color="#ccc" />
+        ))}
+    </Rating>
+  );
 }
 
 function MovieInfo({ id, type, category }: MovieProps) {
@@ -186,8 +236,12 @@ function MovieInfo({ id, type, category }: MovieProps) {
                         ? clickedMovie.title
                         : clickedMovie.name}
                     </BigTitle>
-                    <ReleaseDate>{clickedMovie.release_date}</ReleaseDate>
-                    <Rating>{clickedMovie.vote_average}</Rating>
+                    <BigInfoBox>
+                      {clickedMovie.release_date ? (
+                        <ReleaseDate>{clickedMovie.release_date}</ReleaseDate>
+                      ) : null}
+                      {<StarRating vote={clickedMovie.vote_average} />}
+                    </BigInfoBox>
                     <BigOverview>{clickedMovie.overview}</BigOverview>
                   </BigContent>
                 </>

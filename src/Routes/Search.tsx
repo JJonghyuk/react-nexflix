@@ -3,11 +3,12 @@ import { useHistory, useLocation, useRouteMatch } from "react-router-dom";
 import { getSearch, IGetMoviesResult } from "../api";
 import styled from "styled-components";
 import { AnimatePresence, motion, Variants } from "motion/react";
-import { makeImagePath } from "../utils";
+import { makeImagePath, noImagePath } from "../utils";
+import { FaStar, FaStarHalfAlt, FaRegStar } from "react-icons/fa";
 
 const Wrapper = styled.div`
   overflow-x: hidden;
-  padding-bottom: 200px;
+  padding-bottom: 100px;
 `;
 
 const Loader = styled.div`
@@ -40,8 +41,15 @@ const SearchMovieItem = styled(motion.button).withConfig({
   border-radius: 5px;
   background-color: rgba(24, 24, 24, 1);
   background-image: url(${(props) => props.bgPhoto});
-  background-size: cover;
   background-position: center;
+  ${(props) =>
+    props.bgPhoto.endsWith(noImagePath())
+      ? `background-size: 50px;
+     background-repeat: no-repeat;
+     `
+      : `
+    background-size: cover;
+  `}
 `;
 
 const SearchMovieTitle = styled(motion.span)`
@@ -104,6 +112,7 @@ const InfoCover = styled.div`
   position: relative;
   width: 100%;
   height: 70%;
+  text-align: center;
   &:before {
     content: "";
     display: block;
@@ -132,10 +141,22 @@ const InfoContImgBox = styled.div`
   height: 300px;
   border-radius: 10px;
   box-shadow: 0 0 10px rgba(0, 0, 0, 1);
+  text-align: center;
 `;
 
 const InfoContImg = styled.img`
   width: auto;
+  height: 100%;
+`;
+
+const InfoCoverNoImg = styled.img`
+  width: 250px;
+  height: 100%;
+  object-position: center center;
+`;
+
+const InfoContNoImg = styled.img`
+  width: 150px;
   height: 100%;
 `;
 
@@ -166,11 +187,36 @@ const InfoOverview = styled.p`
   text-overflow: ellipsis;
   overflow: hidden;
 `;
+const InfoBox = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+`;
 
-const ReleaseDate = styled.span``;
+const ReleaseDate = styled.span`
+  display: flex;
+  position: relative;
+  margin-right: 10px;
+  padding-right: 10px;
+  font-size: 16px;
+  line-height: 1;
+  &::after {
+    content: "";
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    right: 0px;
+    margin-top: -2px;
+    width: 1px;
+    height: 15px;
+    background-color: ${(props) => props.theme.white.lighter};
+  }
+`;
 
 const Rating = styled.span`
-  margin-left: 20px;
+  display: flex;
+  gap: 2px;
+  margin-top: -5px;
 `;
 
 const CloseBtn = styled.button`
@@ -216,6 +262,28 @@ const infoVariants: Variants = {
     },
   },
 };
+function StarRating({ vote }: { vote: number }) {
+  const score = vote / 2;
+  const fullStars = Math.floor(score);
+  const hasHalfStar = score - fullStars >= 0.5;
+  const emptyStars = 5 - fullStars - (hasHalfStar ? 1 : 0);
+
+  return (
+    <Rating>
+      {Array(fullStars)
+        .fill(null)
+        .map((_, i) => (
+          <FaStar key={`full-${i}`} color="#FFD700" />
+        ))}
+      {hasHalfStar && <FaStarHalfAlt color="#FFD700" />}
+      {Array(emptyStars)
+        .fill(null)
+        .map((_, i) => (
+          <FaRegStar key={`empty-${i}`} color="#ccc" />
+        ))}
+    </Rating>
+  );
+}
 
 function Search() {
   const history = useHistory();
@@ -265,10 +333,14 @@ function Search() {
                   layoutId={searchItem.id + ""}
                   key={searchItem.id}
                   type="button"
-                  bgPhoto={makeImagePath(
-                    searchItem.backdrop_path || searchItem.poster_path,
-                    "w500",
-                  )}
+                  bgPhoto={
+                    searchItem.backdrop_path || searchItem.poster_path
+                      ? makeImagePath(
+                          searchItem.backdrop_path || searchItem.poster_path,
+                          "w500",
+                        )
+                      : noImagePath()
+                  }
                   variants={MovieItemVariants}
                   initial="normal"
                   whileHover="active"
@@ -300,29 +372,45 @@ function Search() {
                   {clickedMovie && (
                     <>
                       <InfoCover>
-                        <InfoCoverImg
-                          src={makeImagePath(
-                            clickedMovie.backdrop_path ||
-                              clickedMovie.poster_path,
-                          )}
-                        />
+                        {clickedMovie.backdrop_path ||
+                        clickedMovie.poster_path ? (
+                          <InfoCoverImg
+                            src={makeImagePath(
+                              clickedMovie.backdrop_path ||
+                                clickedMovie.poster_path,
+                            )}
+                          />
+                        ) : (
+                          <InfoCoverNoImg src={noImagePath()} />
+                        )}
                       </InfoCover>
                       <InfoContent>
                         <InfoContImgBox>
-                          <InfoContImg
-                            src={makeImagePath(
-                              clickedMovie.poster_path ||
-                                clickedMovie.backdrop_path,
-                            )}
-                          />
+                          {clickedMovie.backdrop_path ||
+                          clickedMovie.poster_path ? (
+                            <InfoContImg
+                              src={makeImagePath(
+                                clickedMovie.backdrop_path ||
+                                  clickedMovie.poster_path,
+                              )}
+                            />
+                          ) : (
+                            <InfoContNoImg src={noImagePath()} />
+                          )}
                         </InfoContImgBox>
                         <InfoTitle>
                           {clickedMovie.title
                             ? clickedMovie.title
                             : clickedMovie.name}
                         </InfoTitle>
-                        <ReleaseDate>{clickedMovie.release_date}</ReleaseDate>
-                        <Rating>{clickedMovie.vote_average}</Rating>
+                        <InfoBox>
+                          {clickedMovie.release_date ? (
+                            <ReleaseDate>
+                              {clickedMovie.release_date}
+                            </ReleaseDate>
+                          ) : null}
+                          {<StarRating vote={clickedMovie.vote_average} />}
+                        </InfoBox>
                         <InfoOverview>{clickedMovie.overview}</InfoOverview>
                       </InfoContent>
                     </>

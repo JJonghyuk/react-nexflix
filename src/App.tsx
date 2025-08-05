@@ -3,10 +3,11 @@ import Home from "./Routes/Home";
 import Tv from "./Routes/Tv";
 import Search from "./Routes/Search";
 import Header from "./Components/Header";
+import Footer from "./Components/Footer";
 
 function App() {
   return (
-    <Router>
+    <Router basename="/react-nexflix">
       <Header />
       <Switch>
         <Route path="/tv">
@@ -19,6 +20,7 @@ function App() {
           <Home />
         </Route>
       </Switch>
+      <Footer />
     </Router>
   );
 }
