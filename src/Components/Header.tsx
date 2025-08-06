@@ -81,12 +81,13 @@ const Circle = styled(motion.span)`
 `;
 
 const Input = styled(motion.input)`
+  z-index: -1;
   position: absolute;
   transform-origin: right center;
   right: 0px;
   padding: 5px 10px;
   padding-left: 40px;
-  z-index: -1;
+  max-width: 218px;
   color: white;
   font-size: 16px;
   background-color: transparent;
